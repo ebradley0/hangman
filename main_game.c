@@ -29,25 +29,6 @@ int main(int argc, int arg)
 
 {
     word_generator();
-    /*
-hangman_t hangman_module;
-int err = hangman_init(&hangman_module);
-
-       if (err)
-       {
-           printf("AN ERROR HAS OCCURED\n\n");
-           exit(-1);
-       }
-Slotted out for now, TODO: Fix this, keeps sending machine code when using module.
-
-       Here We prep the game, choosing the word
-
-
-       err = hangman_module.choose_word(&hangman_module);
-       char chosen[50];
-       strcpy(chosen, hangman_module.word);
-       */
-
     // Start of the game itself
     printf("Welcome to hangman\n");
 
