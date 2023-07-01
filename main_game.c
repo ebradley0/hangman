@@ -9,19 +9,23 @@ enum things
     TRUE,
     FALSE,
 };
-char INCORRECT_GUESSES[100]; // Stores guessed letters that were incorrect
-char chosen[20];             // The word that the user has to guess
-char input[100];             // Checks users guess
-int lives = 6;               // Lives the user has
-int slot;
+char INCORRECT_GUESSES[100];       // Stores guessed letters that were incorrect
+                                   // The word that the user has to guess
+char input[100];                   // Checks users guess
+int lives;                         // Lives the user has
+int slot;                          // Used for slotting incorrect guesses into the array and avoid overwrite of previous guesses
 char INCORRECT_GUESS_PASS = FALSE; // Checks if the user has guessed incorrectly
-char HINT_DISPLAY[20];             // Stores correct guesses for use in hint display
+char HINT_DISPLAY[20];
+char *chosen = NULL; // Stores correct guesses for use in hint display
 
 int word_generator()
 {
     srand(time(NULL));
-    int number_slot = rand() % 50;
-    strcpy(chosen, word_list[number_slot]);
+    int number_slot = rand() % 50;             // Chooses slot of words array
+    int size = strlen(word_list[number_slot]); // Finds the size of the chosen word
+    printf("Size of chosen word = %d\n", size);
+    chosen = (char *)malloc(size);          // Ad;justs the memory to make enough room for the chosen word
+    strcpy(chosen, word_list[number_slot]); // Copies the chosen word into the chosen array
     return 0;
 }
 
@@ -29,12 +33,13 @@ int main(int argc, int arg)
 
 {
     word_generator();
+    lives = strlen(chosen);
     // Start of the game itself
     printf("Welcome to hangman\n");
 
     while (lives > 0) // Looping to check for potential answers
     {
-        printf("=============================================\n\n"); // Used to make the game look nicer
+        printf("=============================================\n\n\n\n"); // Used to make the game look nicer
 
         printf("The word is: ");
 
@@ -67,7 +72,12 @@ int main(int argc, int arg)
             printf("Whoops! One letter at a time!\n");
             continue;
         }
-        if (input != "guess")
+        if (argc > 1 && input != "guess")
+        {
+            printf("Whoops! One letter at a time!\n");
+            continue;
+        }
+        if (input == "guess")
         {
             printf("YOURE GUESSING\n");
         }
@@ -91,22 +101,25 @@ int main(int argc, int arg)
             }
             else
             {
-
                 lives--;
-                INCORRECT_GUESSES[slot] = *input;
-                slot++;
+                INCORRECT_GUESSES[slot] = *input; // Slots incorrect guess
+                slot++;                           // Moves slot to next available slot
             }
         }
         if (strcmp(HINT_DISPLAY, chosen) == 0)
         {
             printf("You've guessed the word! Congratulations!\n");
+            free(chosen);
             exit(1);
         }
+        printf("\n\n\n");
     }
 
     if (lives == 0)
     {
         printf("You have no lives left! If you'd like to try again reactive the file\n");
+        printf("The word was: %s\n", chosen);
+        free(chosen);
         exit(1);
     }
     return 0;
