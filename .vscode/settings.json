@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "hangman.h": "c"
+        "hangman.h": "c",
+        "words.h": "c",
+        "string.h": "c"
     }
 }

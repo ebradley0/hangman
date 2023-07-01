@@ -1,61 +1,55 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "hangman.h"
+#include "words.h"
 enum things
 {
     TRUE,
     FALSE,
-    CORRECT_LETTER,
-    CORRECT_WORD,
-    INCORRECT_LETTER,
-    INCORRECT_WORD,
-    VALID_INPUT,
-    INVALID
 };
-char INCORRECT_GUESSES[100];       // Stores guessed letters that were incorrect
-char chosen[20] = "word";          // The word that the user has to guess
-char input[100];                   // Checks users guess
-int lives = 6;                     // Lives the user has
+char INCORRECT_GUESSES[100]; // Stores guessed letters that were incorrect
+char chosen[20];             // The word that the user has to guess
+char input[100];             // Checks users guess
+int lives = 6;               // Lives the user has
+int slot;
 char INCORRECT_GUESS_PASS = FALSE; // Checks if the user has guessed incorrectly
 char HINT_DISPLAY[20];             // Stores correct guesses for use in hint display
+
+int word_generator()
+{
+    srand(time(NULL));
+    int number_slot = rand() % 50;
+    strcpy(chosen, word_list[number_slot]);
+    return 0;
+}
+
 int main(int argc, int arg)
 
 {
-
-    hangman_t hangman_module;
-    int err = hangman_init(&hangman_module);
-
-    if (err)
-    {
-        printf("AN ERROR HAS OCCURED\n\n");
-        exit(-1);
-    }
-
+    word_generator();
     /*
-    Here We prep the game, choosing the word
-    */
+hangman_t hangman_module;
+int err = hangman_init(&hangman_module);
 
-    /*
+       if (err)
+       {
+           printf("AN ERROR HAS OCCURED\n\n");
+           exit(-1);
+       }
+Slotted out for now, TODO: Fix this, keeps sending machine code when using module.
+
+       Here We prep the game, choosing the word
+
 
        err = hangman_module.choose_word(&hangman_module);
        char chosen[50];
        strcpy(chosen, hangman_module.word);
-       printf("CHOSEN WORD: %s\n", chosen);
-
-      copied out till can be fixed
-
-
-
-
-
-
-
        */
 
     // Start of the game itself
     printf("Welcome to hangman\n");
-    printf("Please enter a letter: ");
 
     while (lives > 0) // Looping to check for potential answers
     {
@@ -78,6 +72,7 @@ int main(int argc, int arg)
         INCORRECT_GUESS_PASS = FALSE;
         printf("You have %d lives left\n", lives);
 
+        // print the list of incorrect guesses array
         printf("Incorrect guesses: %s\n", INCORRECT_GUESSES);
 
         printf("Please enter a letter: ");
@@ -117,7 +112,8 @@ int main(int argc, int arg)
             {
 
                 lives--;
-                strcpy(INCORRECT_GUESSES, input);
+                INCORRECT_GUESSES[slot] = *input;
+                slot++;
             }
         }
         if (strcmp(HINT_DISPLAY, chosen) == 0)
